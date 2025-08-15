@@ -50,13 +50,15 @@ for (let key of sel) {
 const base_url = "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies"
 
 const btn = document.querySelector(".convert");
-let disprate = document.querySelector(".rate span")
+let disprate = document.querySelector(".rate span:nth-child(2)")
 
 
 const convert =async (e)=>{
     let fromCrr=document.querySelector(".from select").value;
     let toCrr=document.querySelector(".to select").value;
     let amt = document.querySelector(".amount input");
+    let fromsys = document.querySelector(".amount span")
+    let tosys = document.querySelector(".output div:nth-child(1)")
 
     console.log(`${fromCrr}, ${toCrr}`);
     const new_url = `${base_url}/${fromCrr}.json`
@@ -64,18 +66,15 @@ const convert =async (e)=>{
     let data = await response.json();
     console.log(data[fromCrr][toCrr]);
     let rate = await data[fromCrr][toCrr];
-    disprate.innerText = rate.toFixed(2);
+    disprate.innerText = rate.toFixed(5);
     let val = (amt.value)*rate;
     console.log(val);
-    document.querySelector(".disp").innerText= val.toFixed(2);
+    document.querySelector(".disp").innerText= val.toFixed(5);
+    fromsys.innerText=fromCrr.toUpperCase();
+    tosys.innerText=toCrr.toUpperCase();
 }
 let amt = document.querySelector(".amount input");
-amt.addEventListener("change", (e)=>{
-         if(amt.value<1){
-        amt.value = 1;
-        alert("Only Enter Positive numerical values!")
-    }
-    })
+
 
 
 // convert();
@@ -83,9 +82,22 @@ updateUI();
 
 btn.addEventListener("click", ()=>{
     // convert();
+    if (isNaN(amt.value) || amt.value.trim() === "") {
+        alert("Please enter a valid number!");
+        amt.value = 1;
+        return;
+    }
+    if(amt.value<1){
+        amt.value = 1;
+        alert("Only Enter Positive numerical values!")
+    }
+    else if (amt.value==="") {
+
+    }
     updateUI();
 })
 document.getElementById("rev").addEventListener("click", (e)=>{
+    e.target.classList.toggle("xng");
     let a = document.querySelector(".from select");
     let b = document.querySelector(".to select");
     let temp = a.selectedIndex;
@@ -94,11 +106,24 @@ document.getElementById("rev").addEventListener("click", (e)=>{
     // flag(a);
     // flag(b);
     // convert();
-    updateUI(); 
+    updateUI();
 })
 
 document.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
+
+        if (isNaN(amt.value) || amt.value.trim() === "") {
+        alert("Please enter a valid number!");
+        amt.value = 1;
+        return;
+    }
+        if(amt.value<1 || amt.value ===""){
+            amt.value = 1;
+            alert("Only Enter Positive numerical values!")
+        }
+        else if (amt.value==="") {
+
+        }
         updateUI();
     }
 });
